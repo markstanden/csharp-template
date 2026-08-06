@@ -1,0 +1,88 @@
+# Tells the editor that this is the top-most configuration file.
+root = true
+
+# Global settings applying to all files
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C# specific rules
+[*.cs]
+
+# Forces 'using' statements to live outside the namespace block, 
+# right at the very top of the source file.
+csharp_using_directive_placement = outside_namespace
+
+# Forces filescoped namespaces to reduce indentation
+csharp_style_namespace_declarations = file_scoped:suggestion
+
+# Formatting: Force opening curly braces to always start on a new line (Allman style)
+csharp_new_line_before_open_brace = all
+
+# Code Style: Code Qualification (prefer omitting "this.")
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+
+# Code Style: Syntax Preferences
+csharp_prefer_braces = true:error
+csharp_style_var_for_built_in_types = false:error
+csharp_style_var_when_type_is_apparent = false:error
+csharp_style_var_elsewhere = false:error
+dotnet_diagnostic.IDE0008.severity = error
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+
+# Keeps object/collection initialization clean (like target-typed new() or standard curly braces).
+dotnet_style_collection_initializer = true:suggestion
+# Explicitly turns off the compiler's drive to rewrite code into modern C# 12 bracket syntax ([] and [..]).
+dotnet_style_prefer_collection_expression = false:suggestion
+
+# ==========================================
+# NAMING CONVENTIONS (Standard .NET Rules)
+# ==========================================
+
+## Private fields use _camelCase
+dotnet_naming_rule.private_fields_underscore.severity = suggestion
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_prefix
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.underscore_prefix.required_prefix = _
+dotnet_naming_style.underscore_prefix.capitalization = camel_case
+
+## Interfaces must start with a capital 'I' and use PascalCase
+dotnet_naming_rule.interfaces_must_start_with_i.severity = suggestion
+dotnet_naming_rule.interfaces_must_start_with_i.symbols = interface_symbols
+dotnet_naming_rule.interfaces_must_start_with_i.style = i_pascal_style
+
+dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
+
+dotnet_naming_style.i_pascal_style.required_prefix = I
+dotnet_naming_style.i_pascal_style.capitalization = pascal_case
+
+## Practically everything else structural uses PascalCase
+# (Types, Methods, Properties, Events, Constants, Enums)
+dotnet_naming_rule.pascal_case_for_structural_members.severity = suggestion
+dotnet_naming_rule.pascal_case_for_structural_members.symbols = structural_symbols
+dotnet_naming_rule.pascal_case_for_structural_members.style = pascal_case_style
+
+dotnet_naming_symbols.structural_symbols.applicable_kinds = class, struct, enum, delegate, method, property, event
+dotnet_naming_symbols.structural_symbols.applicable_accessibilities = *
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+## Parameters and local variables use camelCase
+dotnet_naming_rule.camel_case_for_locals.severity = suggestion
+dotnet_naming_rule.camel_case_for_locals.symbols = local_symbols
+dotnet_naming_rule.camel_case_for_locals.style = camel_case_style
+
+dotnet_naming_symbols.local_symbols.applicable_kinds = parameter, local
+
+dotnet_naming_style.camel_case_style.capitalization = camel_case

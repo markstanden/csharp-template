@@ -1,0 +1,12 @@
+<!-- xml -->
+<Project>
+    <ItemGroup Label="Internals Visible To Tests">
+        <InternalsVisibleTo Include="$(AssemblyName).Tests"/>
+    </ItemGroup>
+
+    <!-- Run manually: dotnet msbuild -t:VerifyFormat -->
+    <Target Name="VerifyFormat">
+        <Exec Command="&quot;$(MSBuildThisFileDirectory)scripts/dotnet-format.sh&quot;"
+              WorkingDirectory="$(MSBuildThisFileDirectory)" />
+    </Target>
+</Project>

@@ -1,0 +1,2 @@
+# Follow `source` / `shellcheck source=` directives (infrastructure, swa).
+external-sources=true

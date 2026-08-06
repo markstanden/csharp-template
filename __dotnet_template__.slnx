@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/__dotnet_template__.Core/__dotnet_template__.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/__dotnet_template__.Core.Tests/__dotnet_template__.Core.Tests.csproj" />
+  </Folder>
+</Solution>

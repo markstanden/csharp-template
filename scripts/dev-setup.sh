@@ -40,11 +40,13 @@ fi
 
 placeholder_remains() {
   if find "$ROOT" -not -path '*/.git/*' -not -path '*/bin/*' -not -path '*/obj/*' \
-      -not -path '*/TestResults/*' -name "*$PLACEHOLDER*" -print -quit | grep -q .; then
+      -not -path '*/TestResults/*' -not -path '*/.dotnet/*' -not -path '*/.config/*' \
+      -name "*$PLACEHOLDER*" -print -quit | grep -q .; then
     return 0
   fi
   if grep -rq -I --exclude=dev-setup.sh --exclude-dir=.git --exclude-dir=bin \
-      --exclude-dir=obj --exclude-dir=TestResults "$PLACEHOLDER" "$ROOT" 2>/dev/null; then
+      --exclude-dir=obj --exclude-dir=TestResults --exclude-dir=.dotnet \
+      --exclude-dir=.config "$PLACEHOLDER" "$ROOT" 2>/dev/null; then
     return 0
   fi
   return 1
@@ -88,7 +90,8 @@ rename_project() {
     base="$(basename "$f")"
     mv "$f" "$dir/${base//$PLACEHOLDER/$name}"
   done < <(find "$ROOT" -type f -name "*$PLACEHOLDER*" -not -path '*/.git/*' \
-    -not -path '*/bin/*' -not -path '*/obj/*' -not -path '*/TestResults/*' -print0)
+    -not -path '*/bin/*' -not -path '*/obj/*' -not -path '*/TestResults/*' \
+    -not -path '*/.dotnet/*' -not -path '*/.config/*' -print0)
 
   # 2. Rename directories, deepest first.
   while IFS= read -r -d '' d; do
@@ -96,14 +99,16 @@ rename_project() {
     base="$(basename "$d")"
     mv "$d" "$parent/${base//$PLACEHOLDER/$name}"
   done < <(find "$ROOT" -depth -type d -name "*$PLACEHOLDER*" -not -path '*/.git/*' \
-    -not -path '*/bin/*' -not -path '*/obj/*' -not -path '*/TestResults/*' -print0)
+    -not -path '*/bin/*' -not -path '*/obj/*' -not -path '*/TestResults/*' \
+    -not -path '*/.dotnet/*' -not -path '*/.config/*' -print0)
 
   # 3. Replace the placeholder in file contents. This script is excluded: it is
   #    the renamer and must always know the canonical placeholder name.
   while IFS= read -r -d '' f; do
     sed -i "s/$PLACEHOLDER/$name/g" "$f"
   done < <(grep -rl -I -Z --exclude=dev-setup.sh --exclude-dir=.git --exclude-dir=bin \
-    --exclude-dir=obj --exclude-dir=TestResults "$PLACEHOLDER" "$ROOT" 2>/dev/null)
+    --exclude-dir=obj --exclude-dir=TestResults --exclude-dir=.dotnet \
+    --exclude-dir=.config "$PLACEHOLDER" "$ROOT" 2>/dev/null)
 
   # 4. Drop the template-only README section.
   delete_readme_section
@@ -169,6 +174,19 @@ if [[ "$DOTNET_VERSION" != "$DOTNET_MAJOR."* ]]; then
   fail "Found .NET SDK $DOTNET_VERSION; this repository targets .NET ${DOTNET_MAJOR}.x."
 fi
 printf 'ok   dotnet SDK %s\n' "$DOTNET_VERSION"
+
+# A stale DOTNET_ROOT (e.g. pointing at a removed install) breaks apphost-launched
+# tools like the Roslyn language server, even though the `dotnet` CLI still works.
+if [[ -n "${DOTNET_ROOT:-}" && ! -d "$DOTNET_ROOT/shared/Microsoft.NETCore.App" ]]; then
+  warn "DOTNET_ROOT is set to '$DOTNET_ROOT' but no .NET runtime is installed there;"
+  warn "apphost tools (roslyn-language-server) will fail to launch. Unset it or point it"
+  warn "at your .NET install (e.g. /usr/lib/dotnet), then re-run this script."
+fi
+
+# Local .NET tools (see .config/dotnet-tools.json) install into ./.dotnet/tools;
+# opencode uses roslyn-language-server to serve C# language features.
+say "Restoring local .NET tools (roslyn-language-server)..."
+dotnet tool restore
 
 # dotnet new templates may not preserve the executable bit, so re-assert it.
 chmod +x "$ROOT"/scripts/*.sh "$ROOT/.githooks/pre-commit"

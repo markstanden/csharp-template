@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "lsp": {
+    "csharp": {
+      "command": [
+        "dotnet",
+        "tool",
+        "run",
+        "roslyn-language-server",
+        "--",
+        "--stdio",
+        "--autoLoadProjects"
+      ]
+    }
+  },
+  "permission": {
+    "lsp": "allow"
+  }
+}

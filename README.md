@@ -46,6 +46,19 @@ The pre-commit hook verifies formatting on every commit; CI runs the same checks
 - `.githooks/` — git hooks (installed by `dev-setup.sh`)
 - `.github/workflows/` — CI
 
+## LSP (Roslyn) for AI agents
+
+The repository ships opencode configuration (`opencode.json`) that runs the Roslyn
+language server for C# instead of the default `csharp-ls`. The server is pinned as a
+local .NET tool in `.config/dotnet-tools.json` and installed by `dev-setup.sh`
+(`dotnet tool restore`), so every machine gets the same version.
+
+- To bump the pinned Roslyn version, edit `.config/dotnet-tools.json` and re-run
+  `./scripts/dev-setup.sh` (or `dotnet tool restore`).
+- Diagnostics are delivered to opencode automatically. For agent-side semantic
+  navigation (go-to-definition, find-references, hover), enable the experimental LSP
+  tool with `OPENCODE_EXPERIMENTAL_LSP_TOOL=true` (see AGENTS.md).
+
 ## Env overrides
 
 See `.env.example`. `dev-setup.sh` creates `.env` from it, and the build/test

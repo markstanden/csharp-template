@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "roslyn-language-server": {
+      "version": "5.11.0-1.26380.4",
+      "commands": [
+        "roslyn-language-server"
+      ]
+    }
+  }
+}

@@ -46,6 +46,9 @@ ScaffoldingReadMe.txt
 *.bak
 CodeCoverage/
 
+# .NET local tool shims (installed by `dotnet tool restore`)
+.dotnet/
+
 # MSBuild Binary and Structured Log
 *.binlog
 

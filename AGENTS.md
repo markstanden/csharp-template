@@ -17,6 +17,11 @@ Guidance for AI agents and humans working in this repository.
   documentation) to match. It is the source of truth for the dev environment.
 - Environment variables that affect the build/test toolchain are documented in
   `.env.example`; the build/test scripts source `.env` when present.
+- `opencode.json` configures the Roslyn language server (pinned in
+  `.config/dotnet-tools.json`, installed by `dev-setup.sh`). With the experimental
+  LSP tool enabled (`OPENCODE_EXPERIMENTAL_LSP_TOOL=true`), prefer the `lsp` tool
+  for go-to-definition, find-references, and hover when a symbol is ambiguous or
+  spans many files.
 
 ## Project layout and wiring
 

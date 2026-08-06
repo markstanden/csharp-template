@@ -16,19 +16,55 @@ Guidance for AI agents and humans working in this repository.
   environment variable, update `scripts/dev-setup.sh` (and `.env.example` / `.env`
   documentation) to match. It is the source of truth for the dev environment.
 - Environment variables that affect the build/test toolchain are documented in
-  `.env.example`.
+  `.env.example`; the build/test scripts source `.env` when present.
+
+## Project layout and wiring
+
+- `src/__dotnet_template__.Core/` is the only library (keep I/O out of it);
+  `tests/__dotnet_template__.Core.Tests/` is the only test project. Both are listed
+  in `__dotnet_template__.slnx` (`.slnx`, not `.sln`).
+- Root `Directory.*` files apply to every project:
+  - `Directory.Build.props` — net10.0, `TreatWarningsAsErrors`,
+    `EnforceCodeStyleInBuild`, nullable, implicit usings. Don't repeat these in a
+    new csproj.
+  - `Directory.Packages.props` — central package management (CPM) is enabled.
+  - `Directory.Build.targets` — makes internals visible to the `.Tests` assembly.
+- The coverage gate lives in the test csproj (via `coverlet.msbuild`); see
+  "Packages and tests".
 
 ## Guardrails (do not bypass)
 
 - **Code style** is enforced by `.editorconfig` and fails the build
   (`TreatWarningsAsErrors`, `EnforceCodeStyleInBuild`). Style is verified in CI and by
-  the pre-commit hook. No `var` for built-in types; Allman braces; file-scoped
-  namespaces; `_camelCase` private fields.
+  the pre-commit hook. No `var` (all var-style rules are `error`); Allman braces;
+  file-scoped namespaces; `_camelCase` private fields.
 - **Formatting** must be clean. `dotnet format` runs in verify mode in the pre-commit
   hook and CI. To auto-format: `FORMAT_APPLY=1 ./scripts/dotnet-format.sh`.
-- **Tests and coverage**: `./scripts/verify.sh` runs shellcheck, format verification,
-  the build, and tests. Branch coverage must meet `BRANCH_COVERAGE_THRESHOLD`
-  (default 100%).
+- **Tests and coverage**: the coverage gate is built into `dotnet test` via the
+  test csproj (`coverlet.msbuild`): `CollectCoverage=true`, branch coverage,
+  `ThresholdStat=total`, threshold from `BRANCH_COVERAGE_THRESHOLD` (default 100).
+  `dotnet test` fails when branch coverage drops below it. `./scripts/verify.sh`
+  runs shellcheck, format verification, the build, and the gated tests. Plain
+  `dotnet build` and the pre-commit hook skip the coverage gate; formatting is
+  verified only by `verify.sh` and the pre-commit hook.
+
+## Packages and tests
+
+- Add NuGet dependencies via CPM: put the version in `Directory.Packages.props` and
+  reference the package without a version in the csproj. A direct `Version` in a
+  csproj fails the build (NU1008).
+- Tests use xunit v3, Shouldly (`ShouldBe`), and NSubstitute; these are already wired
+  as global usings in the test csproj.
+- Internal members are visible to the test project (`InternalsVisibleTo` in
+  `Directory.Build.targets`), so test them directly instead of via reflection.
+- `CoverletExclude` in the test csproj keeps test-infra packages (xunit,
+  NSubstitute, Shouldly, coverlet, Microsoft.TestPlatform) out of the measurement.
+  Coverlet measures every project assembly that ships a PDB, so new projects are
+  covered automatically — extend `CoverletExclude` only if a dependency's PDB ends
+  up in the test output.
+- Run a single test with `dotnet test --filter "FullyQualifiedName~<name>"`; add
+  `-p:CollectCoverage=false` because a partial run can fail the 100% coverage gate.
+  Run `./scripts/verify.sh` before committing.
 
 ## Workflow
 

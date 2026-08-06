@@ -22,6 +22,6 @@ shellcheck "$ROOT"/scripts/*.sh "$ROOT/.githooks/pre-commit"
 
 "$ROOT/scripts/dotnet-format.sh"
 dotnet build "$SOLUTION" --verbosity quiet
-"$ROOT/scripts/test-coverage.sh"
+dotnet test "$SOLUTION" --no-build --verbosity minimal
 
 echo "All verification checks passed."

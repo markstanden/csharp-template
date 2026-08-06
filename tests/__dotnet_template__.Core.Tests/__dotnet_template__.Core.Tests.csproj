@@ -7,6 +7,18 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <CollectCoverage>true</CollectCoverage>
+    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
+    <CoverletOutput>TestResults/</CoverletOutput>
+    <IncludeTestAssembly>false</IncludeTestAssembly>
+    <Threshold Condition="'$(BRANCH_COVERAGE_THRESHOLD)' != ''">$(BRANCH_COVERAGE_THRESHOLD)</Threshold>
+    <Threshold Condition="'$(BRANCH_COVERAGE_THRESHOLD)' == ''">100</Threshold>
+    <ThresholdType>branch</ThresholdType>
+    <ThresholdStat>total</ThresholdStat>
+    <CoverletExclude>[xunit*]*,[xunit.runner.visualstudio]*,[NSubstitute*]*,[Castle*]*,[Shouldly*]*,[coverlet*]*,[Microsoft.Testing*]*,[Microsoft.TestPlatform*]*,[Microsoft.NET.Test.Sdk]*,[Microsoft.CodeCoverage]*,[Microsoft.Extensions.*]*</CoverletExclude>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="coverlet.collector">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

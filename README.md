@@ -31,7 +31,7 @@ This section is removed automatically by the rename step.
 | Verify everything (format, build, tests, coverage) | `./scripts/verify.sh` |
 | Auto-format code | `FORMAT_APPLY=1 ./scripts/dotnet-format.sh` |
 | Clean all build/test artifacts | `./scripts/clean.sh` |
-| Run tests | `dotnet test` |
+| Run tests (enforces the branch-coverage gate) | `dotnet test` |
 | Build | `dotnet build` |
 
 The pre-commit hook verifies formatting on every commit; CI runs the same checks as
@@ -42,7 +42,7 @@ The pre-commit hook verifies formatting on every commit; CI runs the same checks
 - `src/__dotnet_template__.Core/` — domain logic (keep I/O out of this project)
 - `tests/__dotnet_template__.Core.Tests/` — tests for the core project
 - `config/` — runtime configuration for the app
-- `scripts/` — dev tooling (`verify.sh`, `dotnet-format.sh`, `test-coverage.sh`, `clean.sh`, `dev-setup.sh`)
+- `scripts/` — dev tooling (`verify.sh`, `dotnet-format.sh`, `clean.sh`, `dev-setup.sh`)
 - `.githooks/` — git hooks (installed by `dev-setup.sh`)
 - `.github/workflows/` — CI
 

@@ -16,10 +16,11 @@
     <Threshold Condition="'$(BRANCH_COVERAGE_THRESHOLD)' == ''">100</Threshold>
     <ThresholdType>branch</ThresholdType>
     <ThresholdStat>total</ThresholdStat>
-    <CoverletExclude>[xunit*]*,[xunit.runner.visualstudio]*,[NSubstitute*]*,[Castle*]*,[Shouldly*]*,[coverlet*]*,[Microsoft.Testing*]*,[Microsoft.TestPlatform*]*,[Microsoft.NET.Test.Sdk]*,[Microsoft.CodeCoverage]*,[Microsoft.Extensions.*]*</CoverletExclude>
+    <Exclude>[xunit*]*,[xunit.runner.visualstudio]*,[NSubstitute*]*,[Castle*]*,[Shouldly*]*,[coverlet*]*,[Microsoft.Testing*]*,[Microsoft.TestPlatform*]*,[Microsoft.NET.Test.Sdk]*,[Microsoft.CodeCoverage]*,[Microsoft.Extensions.*]*</Exclude>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Shouldly" />

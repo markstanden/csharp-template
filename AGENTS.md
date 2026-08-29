@@ -62,10 +62,11 @@ Guidance for AI agents and humans working in this repository.
   as global usings in the test csproj.
 - Internal members are visible to the test project (`InternalsVisibleTo` in
   `Directory.Build.targets`), so test them directly instead of via reflection.
-- `CoverletExclude` in the test csproj keeps test-infra packages (xunit,
-  NSubstitute, Shouldly, coverlet, Microsoft.TestPlatform) out of the measurement.
+- The `Exclude` property in the test csproj keeps test-infra packages (xunit,
+  NSubstitute, Shouldly, coverlet, Microsoft.TestPlatform) out of the measurement
+  (note: it is `Exclude`, not `CoverletExclude`, which coverlet ignores).
   Coverlet measures every project assembly that ships a PDB, so new projects are
-  covered automatically — extend `CoverletExclude` only if a dependency's PDB ends
+  covered automatically — extend `Exclude` only if a dependency's PDB ends
   up in the test output.
 - Run a single test with `dotnet test --filter "FullyQualifiedName~<name>"`; add
   `-p:CollectCoverage=false` because a partial run can fail the 100% coverage gate.
